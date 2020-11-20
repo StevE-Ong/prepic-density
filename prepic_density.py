@@ -9,8 +9,6 @@ from .figformat import figure_format
 fig_width, fig_height, params = figure_format(fig_width=3.4 * 2)
 mpl.rcParams.update(params)
 
-ne = 5.307e18  # electron plasma density
-flat_top_dist = 1.0  # plasma flat top distance (mm)
 E4Params = namedtuple(
     "E4Params",
     [
@@ -117,7 +115,7 @@ if __name__ == "__main__":
         w0=18.7 * u.micrometer,
         ɛL=1.8 * u.joule,
         τL=25 * u.femtosecond,
-        prop_dist=flat_top_dist * u.mm,
+        prop_dist=flat_top_dist * u.micrometer,
     )
 
     e4_beam = GaussianBeam(w0=param.w0)
