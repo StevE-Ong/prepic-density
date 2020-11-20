@@ -3,16 +3,16 @@ import numpy as np
 import unyt as u  # for physical units support
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from .figformat import figure_format
 from prepic import GaussianBeam, Laser, Plasma, Simulation
+from .figformat import figure_format
 
 fig_width, fig_height, params = figure_format(fig_width=3.4 * 2)
 mpl.rcParams.update(params)
 
 ne = 5.307e18  # electron plasma density
 flat_top_dist = 1.0  # plasma flat top distance (mm)
-Flame = namedtuple(
-    "Flame",
+E4Params = namedtuple(
+    "E4Params",
     [
         "npe",  # electron plasma density
         "w0",  # laser beam waist (Gaussian beam assumed)
@@ -21,27 +21,6 @@ Flame = namedtuple(
         "prop_dist",  # laser propagation distance (acceleration length)
     ],
 )
-param = Flame(
-    npe=ne / u.cm ** 3,
-    w0=18.7 * u.micrometer,
-    ɛL=1.8 * u.joule,
-    τL=25 * u.femtosecond,
-    prop_dist=flat_top_dist * u.mm,
-)
-
-flame_beam = GaussianBeam(w0=param.w0)
-flame_laser = Laser(ɛL=param.ɛL, τL=param.τL, beam=flame_beam)
-flame_plasma = Plasma(
-    n_pe=param.npe, laser=flame_laser, propagation_distance=param.prop_dist
-)
-sim_flame = Simulation(flame_plasma, box_length=97 * u.micrometer, ppc=2)
-
-
-print(flame_beam)
-print(flame_laser)
-print(f"critical density for this laser is {flame_laser.ncrit:.1e}")
-print(flame_plasma)
-print(sim_flame)
 
 # Create & plot a plasma density profile with a flat top and Gaussian ramps to either side.
 # https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b
@@ -130,3 +109,27 @@ if __name__ == "__main__":
     fig.set_size_inches(fig_width, fig_width * 0.40)
     plt.tight_layout()
     fig.savefig("density.eps", dpi=100, bbox_inches="tight")
+
+    # Estimate laser-plasma parameters
+
+    param = E4Params(
+        npe=ne / u.cm ** 3,
+        w0=18.7 * u.micrometer,
+        ɛL=1.8 * u.joule,
+        τL=25 * u.femtosecond,
+        prop_dist=flat_top_dist * u.mm,
+    )
+
+    e4_beam = GaussianBeam(w0=param.w0)
+    e4_laser = Laser(ɛL=param.ɛL, τL=param.τL, beam=e4_beam)
+    e4_plasma = Plasma(
+        n_pe=param.npe, laser=e4_laser, propagation_distance=param.prop_dist
+    )
+    sim_e4 = Simulation(e4_plasma, box_length=97 * u.micrometer, ppc=2)
+
+
+    print(e4_beam)
+    print(e4_laser)
+    print(f"critical density for this laser is {e4_laser.ncrit:.1e}")
+    print(e4_plasma)
+    print(sim_e4)

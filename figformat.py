@@ -19,7 +19,7 @@ def figure_format(fig_width, fig_height=None):
       corresponding to the width of a column in a double colomn paper.
     """
     golden_ratio = 1.618  # Aesthetic ratio
-    if fig_height == None:
+    if fig_height is None:
         fig_height = fig_width / golden_ratio
 
     fig_size = [fig_width, fig_height]
