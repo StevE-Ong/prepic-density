@@ -1,3 +1,5 @@
+"""Pre-pic and plot density profile of a gas jet"""
+
 from collections import namedtuple  # optional, for grouping input parameters
 import numpy as np
 import unyt as u  # for physical units support
@@ -20,12 +22,13 @@ E4Params = namedtuple(
     ],
 )
 
-# Create & plot a plasma density profile with a flat top and Gaussian ramps to either side.
-# https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b
 
 
 def dens_func(x, *, center_left, center_right, sigma_left, sigma_right, power):
-    """Compute the (normalized) plasma density at position x."""
+    """Compute the (normalized) plasma density at position x.
+    Flat top and Gaussian ramps to each side.
+    https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b
+    """
 
     def ramp(x, *, center, sigma, power):
         """Gaussian-like function."""
