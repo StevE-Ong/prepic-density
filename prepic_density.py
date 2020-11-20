@@ -1,17 +1,13 @@
 from collections import namedtuple  # optional, for grouping input parameters
 import numpy as np
 import unyt as u  # for physical units support
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import figformat 
-fig_width,fig_height,params=figformat.figure_format(fig_width=3.4*2)
-mpl.rcParams.update(params)
-from prepic import GaussianBeam
-from prepic import Laser
-from prepic import Plasma
-from prepic import Simulation
+from .figformat import figure_format
+from prepic import GaussianBeam, Laser, Plasma, Simulation
 
+fig_width,fig_height,params=figure_format(fig_width=3.4*2)
+mpl.rcParams.update(params)
 
 ne = 5.307e18 # electron plasma density
 flat_top_dist = 1.0 # plasma flat top distance (mm)
@@ -49,7 +45,7 @@ print(f"critical density for this laser is {flame_laser.ncrit:.1e}")
 print(flame_plasma)
 print(sim_flame)
 
-# # Create & plot a plasma density profile with a flat top and Gaussian ramps to either side.
+# Create & plot a plasma density profile with a flat top and Gaussian ramps to either side.
 # https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b 
 
 def dens_func(x, *, center_left, center_right, sigma_left, sigma_right, power):
