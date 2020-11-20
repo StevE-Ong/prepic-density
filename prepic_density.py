@@ -4,7 +4,7 @@ import unyt as u  # for physical units support
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from prepic import GaussianBeam, Laser, Plasma, Simulation
-from .figformat import figure_format
+from figformat import figure_format
 
 fig_width, fig_height, params = figure_format(fig_width=3.4 * 2)
 mpl.rcParams.update(params)
