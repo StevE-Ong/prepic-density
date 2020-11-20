@@ -6,54 +6,53 @@ import matplotlib as mpl
 from .figformat import figure_format
 from prepic import GaussianBeam, Laser, Plasma, Simulation
 
-fig_width,fig_height,params=figure_format(fig_width=3.4*2)
+fig_width, fig_height, params = figure_format(fig_width=3.4 * 2)
 mpl.rcParams.update(params)
 
-ne = 5.307e18 # electron plasma density
-flat_top_dist = 1.0 # plasma flat top distance (mm)
+ne = 5.307e18  # electron plasma density
+flat_top_dist = 1.0  # plasma flat top distance (mm)
 Flame = namedtuple(
-     "Flame",
+    "Flame",
     [
         "npe",  # electron plasma density
-         "w0",  # laser beam waist (Gaussian beam assumed)
-         "ɛL",  # laser energy on target (focused into the FWHM@intensity spot)
-         "τL",  # laser pulse duration (FWHM@intensity)
-         "prop_dist",  # laser propagation distance (acceleration length)
-     ],
-    )
+        "w0",  # laser beam waist (Gaussian beam assumed)
+        "ɛL",  # laser energy on target (focused into the FWHM@intensity spot)
+        "τL",  # laser pulse duration (FWHM@intensity)
+        "prop_dist",  # laser propagation distance (acceleration length)
+    ],
+)
 param = Flame(
-     npe = ne / u.cm ** 3,
-     w0 = 18.7 * u.micrometer,
-     ɛL = 1.8 * u.joule,
-     τL = 25 * u.femtosecond,
-     prop_dist = flat_top_dist * u.mm,
-    )
+    npe=ne / u.cm ** 3,
+    w0=18.7 * u.micrometer,
+    ɛL=1.8 * u.joule,
+    τL=25 * u.femtosecond,
+    prop_dist=flat_top_dist * u.mm,
+)
 
-flame_beam = GaussianBeam(w0 =param.w0)
+flame_beam = GaussianBeam(w0=param.w0)
 flame_laser = Laser(ɛL=param.ɛL, τL=param.τL, beam=flame_beam)
 flame_plasma = Plasma(
-    n_pe=param.npe, 
-    laser=flame_laser, 
-    propagation_distance=param.prop_dist
-    )
-sim_flame = Simulation(flame_plasma,box_length=97*u.micrometer,ppc=2)
+    n_pe=param.npe, laser=flame_laser, propagation_distance=param.prop_dist
+)
+sim_flame = Simulation(flame_plasma, box_length=97 * u.micrometer, ppc=2)
 
 
 print(flame_beam)
-print(flame_laser) 
+print(flame_laser)
 print(f"critical density for this laser is {flame_laser.ncrit:.1e}")
 print(flame_plasma)
 print(sim_flame)
 
 # Create & plot a plasma density profile with a flat top and Gaussian ramps to either side.
-# https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b 
+# https://gist.github.com/berceanu/b51318f1f90d63678cad99ed6d154a8b
+
 
 def dens_func(x, *, center_left, center_right, sigma_left, sigma_right, power):
     """Compute the (normalized) plasma density at position x."""
-    
+
     def ramp(x, *, center, sigma, power):
         """Gaussian-like function."""
-        
+
         return np.exp(-(((x - center) / sigma) ** power))
 
     # Allocate relative density
@@ -90,9 +89,9 @@ if __name__ == "__main__":
     gasCenterRight_SI = gasCenterLeft_SI + flat_top_dist
     gasSigmaLeft_SI = 500
     gasSigmaRight_SI = 500
-    FOCUS_POS_SI = 300 #microns
+    FOCUS_POS_SI = 300  # microns
     Nozzle_r = (gasCenterLeft_SI + gasCenterRight_SI) / 2 - FOCUS_POS_SI
-    Nozzle_r = Nozzle_r*0.001
+    Nozzle_r = Nozzle_r * 0.001
 
     all_x = np.linspace(0, gasCenterRight_SI + 2 * gasSigmaRight_SI, 3001)
     dens = dens_func(
@@ -103,7 +102,6 @@ if __name__ == "__main__":
         sigma_right=gasSigmaRight_SI,
         power=gasPower,
     )
-
 
     fig, ax = plt.subplots()
 
@@ -126,9 +124,9 @@ if __name__ == "__main__":
         arrowprops=dict(arrowstyle="<->", connectionstyle="arc3"),
     )
 
-    ax.set_ylim(ymin=0,ymax=ne*1.618)
+    ax.set_ylim(ymin=0, ymax=ne * 1.618)
     ax.set_xlim(xmin=-500)
     fig = plt.gcf()
-    fig.set_size_inches(fig_width, fig_width*0.40)  
+    fig.set_size_inches(fig_width, fig_width * 0.40)
     plt.tight_layout()
-    fig.savefig("density.eps",dpi=100, bbox_inches='tight')
+    fig.savefig("density.eps", dpi=100, bbox_inches="tight")
