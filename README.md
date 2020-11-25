@@ -19,3 +19,5 @@ For `LaTeX` font rendering of `matplotlib` figures, under `Ubuntu 20.04`:
 ```console
 $ sudo apt install dvipng texlive-latex-extra texlive-fonts-recommended cm-super
 ```
+
+![alt text](density.png)
