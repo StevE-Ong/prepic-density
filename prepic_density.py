@@ -60,17 +60,17 @@ def dens_func(x, *, center_left, center_right, sigma_left, sigma_right, power):
 
 
 if __name__ == "__main__":
-    ne = 5.307e18  # electron plasma density cm$^{-3}$
+    ne = 8e18  # electron plasma density cm$^{-3}$
     gasPower = 4
 
     #  lengths in microns
     flat_top_dist = 1000  # plasma flat top distance
-    gasCenterLeft_SI = 800
+    gasCenterLeft_SI = 1000
     gasCenterRight_SI = gasCenterLeft_SI + flat_top_dist
     gasSigmaLeft_SI = 500
     gasSigmaRight_SI = 500
-    FOCUS_POS_SI = 300  # microns
-    Nozzle_r = (gasCenterLeft_SI + gasCenterRight_SI) / 2 - FOCUS_POS_SI
+    FOCUS_POS_SI = 100  # microns
+    Nozzle_r = (gasCenterLeft_SI + gasCenterRight_SI) / 2 - gasSigmaLeft_SI
     Nozzle_r = Nozzle_r * 0.001
 
     all_x = np.linspace(0, gasCenterRight_SI + 2 * gasSigmaRight_SI, 3001)
@@ -91,25 +91,32 @@ if __name__ == "__main__":
     ax.axvline(x=gasCenterRight_SI, ymin=0, ymax=ne, linestyle="--")
 
     ax.axvline(x=FOCUS_POS_SI, ymin=0, ymax=ne, linestyle="--", color="red")
-
+    ax.text(FOCUS_POS_SI + 16.18, ne,
+        r"Laser focus = %s $\mathrm{\mu m}$" % FOCUS_POS_SI, color="red"
+    )
+    
     ax.set_ylabel(r"Electron density (cm$^{-3}$)")
     ax.set_xlabel(r"Plasma length ($\mathrm{\mu m}$)")
 
     ax.annotate(
         r"Nozzle radius = %s $\mathrm{mm}$" % Nozzle_r,
-        xy=(FOCUS_POS_SI, ne / 3),
+        xy=(gasCenterLeft_SI-gasSigmaLeft_SI, ne / 3),
         xycoords="data",
         xytext=((gasCenterLeft_SI + gasCenterRight_SI) / 2, ne / 3),
         textcoords="data",
         arrowprops=dict(arrowstyle="<->", connectionstyle="arc3"),
     )
-
+    # add watermark
+    ax.text(0.5, 0.5, 'LGED preliminary', transform=ax.transAxes,
+        fontsize=40, color='gray', alpha=0.5,
+        ha='center', va='center', rotation='30')
+        
     ax.set_ylim(ymin=0, ymax=ne * 1.618)
     ax.set_xlim(xmin=-500)
     fig = plt.gcf()
     fig.set_size_inches(fig_width, fig_width * 0.40)
     plt.tight_layout()
-    fig.savefig("density.eps", dpi=100, bbox_inches="tight")
+    fig.savefig(rf"density{gasPower}.png", dpi=100, bbox_inches="tight")
 
     # Estimate laser-plasma parameters
 
