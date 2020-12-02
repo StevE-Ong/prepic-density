@@ -20,7 +20,7 @@ For `LaTeX` font rendering of `matplotlib` figures, under `Ubuntu 20.04`:
 $ sudo apt install dvipng texlive-latex-extra texlive-fonts-recommended cm-super
 ```
 
-![alt text](density.png)
+![alt text](density4.png)
 
 ```
 beam with w0=18.7 µm (FWHM=22.0 µm), zᵣ=1.37 mm, λL=0.80 µm
