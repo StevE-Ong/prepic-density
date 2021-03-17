@@ -33,7 +33,7 @@ def dens_func(x, *, center_left, center_right, sigma_left, sigma_right, power):
     def ramp(x, *, center, sigma, power):
         """Gaussian-like function."""
 
-        return np.exp(-(((x - center) / sigma) ** power))
+        return np.exp(-(np.abs((x - center) / sigma) ** power))
 
     # Allocate relative density
     n = np.ones_like(x)
